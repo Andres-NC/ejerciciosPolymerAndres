@@ -98,7 +98,10 @@
 					}
 
 					addToCarrito(){
-						this.unshift('carrito',this.fruta);
+						if(this.fruta!=""){
+							this.unshift('carrito',this.fruta);
+							this.fruta=""
+						}
 					}
 				}
 				window.customElements.define(ComponentCarrito.is,ComponentCarrito);
