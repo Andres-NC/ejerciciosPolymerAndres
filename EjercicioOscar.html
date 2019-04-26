@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Ejercicio Oscar</title>
+			<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+		<script src="webcomponentsjs/webcomponents-loader.js"></script>
+		<link rel="import" href="iron-ajax/iron-ajax.html">
+		<link rel="import" href="polymer/polymer-element.html">
+</head>
+<body>
+	<component-rotacion></component-rotacion>
+	<dom-module id="component-rotacion">
+		<template>
+			<style>
+				:host{
+					display:block;
+					background: cyan;
+				}
+
+				.colorAzul{
+					background: blue;
+					height: 30px;
+					width: 30px;
+					margin:5px;
+					cursor:pointer;
+					color: white;
+					border: 3px solid white;
+				}
+				.colorVerde{
+					background: green;
+					height: 30px;
+					width: 30px;
+					margin:5px;
+					cursor:pointer;
+					color: white;
+					border: 3px solid white;
+				}
+			</style>
+		<h1>Array Circular</h1>
+		<hr>
+		<label>Size: </label> <input type="number" on-change="fillArray" value="{{size::input}}">
+		<label>Rotaciones: </label> <input type="number" on-change="makeRotation" value="{{rotacion::input}}">
+		<hr>
+		
+		<h1>Arr</h1>
+
+		<template is="dom-repeat" items="{{arrayCircular}}">
+			<div class="colorAzul" on-mouseover="changeColorVerde" on-mouseout="ChangeColorAzul">
+				<label>[[item]]</label>
+			</div>
+		</template>
+		
+		<h1>Array Rotation</h1>
+		<template is="dom-repeat" items="[[arrayRotation]]">
+			<div class="colorAzul" on-mouseover="changeColorVerde" on-mouseout="deleteElement">
+				<label>[[item]]</label>
+			</div>
+		</template>
+
+		</template>
+		<script>
+			class ComponentRotacion extends Polymer.Element{
+				static get is(){return 'component-rotacion'}
+				static get properties(){
+					return {
+						size:{
+							type:Number
+							//observer:"fillArray"
+						},
+						rotacion:{
+							type:Number,
+							value:1,
+							//observer:"makeRotation"
+						},
+						arrayCircular:{
+							type:Array,
+							value:[]
+						},
+						arrayRotation:{
+							type:Array,
+							value:[]
+						},
+						claseColor:{
+							type:String,
+							value:"colorAzul"
+						}
+					}
+				}
+
+				fillArray(){
+					//console.log('fillArray',this.size)
+					this.arrayCircular = new Array(this.size);
+					for (var i = 0; i < this.size; i++) {
+						//console.log('entre al for')
+						this.arrayCircular[i] = (Math.round(Math.random() * (10 - 1) + 1));
+						//console.log(this.arrayCircular)
+					}
+					this.makeRotation()
+				}
+
+				changeColorVerde(e){
+					e.target.classList.remove('colorAzul')
+					e.target.classList.add('colorVerde')
+					//this.claseColor = "colorVerde"
+				}
+
+				ChangeColorAzul(e){
+					e.target.classList.remove('colorVerde')
+					e.target.classList.add('colorAzul')
+				}
+
+				deleteElement(e){
+					e.target.remove()
+				}
+				makeRotation(){
+					var ultimo;
+					console.log(this.arrayRotation)
+					this.arrayRotation = this.arrayCircular.slice(0);
+					console.log(this.arrayRotation)
+
+					for (var i = 0; i < this.rotacion; i++) {
+						ultimo = this.arrayCircular[this.arrayCircular.length-(i+1)];
+						for (var j = this.arrayRotation.length-1; j > 0; j--) {
+							this.arrayRotation[j] = this.arrayRotation[j-1]
+						}
+						this.arrayRotation[0] = ultimo;
+					}
+					console.log("Ultimo array: ",this.arrayRotation);
+				}
+			}
+			window.customElements.define(ComponentRotacion.is,ComponentRotacion)
+		</script>
+	</dom-module>
+</body>
+</html>

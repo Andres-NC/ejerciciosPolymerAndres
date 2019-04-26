@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Polymer Element</title>
+	
+		<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+		<script src="webcomponentsjs/webcomponents-loader.js"></script>
+		<link rel="import" href="iron-ajax/iron-ajax.html">
+		<link rel="import" href="polymer/polymer-element.html">
+	</head>
+
+	<body>
+		<h1>Polymer</h1>
+
+		<component-padre></component-padre>
+		<dom-module id="component-padre">
+			<template>
+				<style>
+					:host{
+						display: block;
+						background-color:cyan;
+						padding:10px;
+					}
+					.colorRojo{
+						background: red;
+						color:white;
+					}
+					.colorVerde{
+						background: green;
+						color:white;
+					}
+				</style>
+
+				<h2 class$="{{clase}}">[[nombre]] [[modelo]]</h2>
+				<label>Nombre: </label>
+				<input type="text" value="{{nombre::input}}">
+				<component-marca nombre="[[nombre]]" clase="{{clase}}" modelo="{{modelo}}"></component-marca>
+
+			</template>
+			<script>
+				class ComponentPadre extends Polymer.Element{
+					static get is(){return 'component-padre'}
+					static get properties(){
+						return {
+							nombre:{
+								type:String
+							},
+							clase:{
+								type:String
+							},
+							modelo:{
+								type:String
+							}
+						};
+					}
+				}
+				window.customElements.define(ComponentPadre.is,ComponentPadre);
+			</script>
+		</dom-module>
+
+		<dom-module id ="component-marca">
+			<template>
+				<style>
+					:host{
+						display: block;
+						background-color:#B5F056;
+						padding:10px;
+						margin:10px;
+					}
+				</style>
+
+				<h3>Nombre: [[nombre]]</h3>
+
+				<template is="dom-if" if=[[existMarca]]>
+					<h3>Marca: [[marca]]</h3>
+				</template>
+
+				<label>Modelo: </label>
+				
+				<input type="text" value="{{modelo::input}}">
+			</template>
+			<script>
+				class ComponentMarca extends Polymer.Element{
+					static get is(){return 'component-marca'}
+					static get properties(){
+						return {
+							nombre:{
+								type:String,
+								observer:"searchMarca"
+							},
+							marcas:{
+								type:Array,
+								value:[{nombre:'Vento',marca:'VW'},{nombre:'Spark',marca:'Chevrolet'}]
+							},
+							marca:{
+								type:String
+							},
+							modelo:{
+								type:String,
+								notify:true
+							},
+							clase:{
+								type:String,
+								notify:true
+							},
+							existMarca:{
+								type:Boolean,
+								value:false
+							}
+						};
+					}
+
+					searchMarca(){
+						let index = this.marcas.findIndex((item)=>{
+							return item.nombre == this.nombre
+						})
+						
+						if(index >=0){
+							this.marca = this.marcas[index].marca
+							this.clase = 'colorVerde'
+							this.existMarca = true;
+						}
+						else{
+							this.existMarca = false;
+							this.clase = 'colorRojo';
+						}
+					}
+				}
+				window.customElements.define(ComponentMarca.is,ComponentMarca);
+			</script>
+		</dom-module>
+
+
+
+
+
+
+
+
+
+
+
+
+		<dom-module id="component-modelo">
+			<template>
+				<style>
+					:host{
+						display: block;
+					}
+				</style>
+				<h4>Nombre: </h4>
+				<h4>Marca: </h4>
+				<h4>Precio: </h4>
+			</template>
+			<script>
+				class ComponentModelo extends Polymer.Element{
+					static get is (){return 'component-modelo'}
+					static get properties(){
+						return {
+							nombre:{
+								type:String
+							},
+							marca:{
+								type:String
+							},
+							modelos:{
+								type:Array,
+								value:[{nombre:'Vento',modelo:'2018',}]
+							}
+						}
+					}
+				}
+			</script>
+		</dom-module>
+	</body>
+</html>
