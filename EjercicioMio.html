@@ -131,48 +131,5 @@
 				window.customElements.define(ComponentMarca.is,ComponentMarca);
 			</script>
 		</dom-module>
-
-
-
-
-
-
-
-
-
-
-
-
-		<dom-module id="component-modelo">
-			<template>
-				<style>
-					:host{
-						display: block;
-					}
-				</style>
-				<h4>Nombre: </h4>
-				<h4>Marca: </h4>
-				<h4>Precio: </h4>
-			</template>
-			<script>
-				class ComponentModelo extends Polymer.Element{
-					static get is (){return 'component-modelo'}
-					static get properties(){
-						return {
-							nombre:{
-								type:String
-							},
-							marca:{
-								type:String
-							},
-							modelos:{
-								type:Array,
-								value:[{nombre:'Vento',modelo:'2018',}]
-							}
-						}
-					}
-				}
-			</script>
-		</dom-module>
 	</body>
 </html>

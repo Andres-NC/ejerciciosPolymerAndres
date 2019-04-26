@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Ejercicio Luis Balderas</title>
+	
+		<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+		<script src="webcomponentsjs/webcomponents-loader.js"></script>
+		<link rel="import" href="iron-ajax/iron-ajax.html">
+		<link rel="import" href="polymer/polymer-element.html">
+	</head>
+
+	<body>
+		<h1>Tianguis</h1>
+
+		<component-fruta></component-fruta>
+		<dom-module id="component-fruta">
+			<template>
+				<style>
+					:host{
+						display: block;
+						padding:10px;
+					}
+				</style>
+				<table>
+					<tr>
+						<td on-click="setFruta">
+<img src="http://www.redagricola.com/cl/assets/uploads/2017/08/xmanazana-792x591-c-default.jpg.pagespeed.ic.X_s5-6luAc.jpg" width="300" height="250" alt="Manzana">
+						</td>
+						<td on-click="setFruta">
+<img src="https://super.walmart.com.mx/images/product-images/img_large/00000000004024L.jpg" width="300" height="250" alt="Pera">
+						</td>
+						<td on-click="setFruta">
+<img src="https://www.superama.com.mx/Content/images/products/img_large/0000000004022L.jpg" width="300" height="250" alt="Uva">
+						</td>
+												<td on-click="setFruta">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfiQJZyILluBDZs8UYhwZAn72WbZln-XDJIeI82lla4wKAplo6" width="300" height="250" alt="Kiwi">
+						</td>
+					</tr>
+				</table>
+
+				<component-carrito fruta="{{fruta}}"></component-carrito>
+
+			</template>
+			<script>
+				class ComponentFruta extends Polymer.Element{
+					static get is(){return 'component-fruta'}
+					static get properties(){
+						return {
+							fruta:{
+								type:String
+							}
+						};
+					}
+					setFruta(e){
+						this.fruta = e.target.alt;
+					}
+				}
+				window.customElements.define(ComponentFruta.is,ComponentFruta);
+			</script>
+		</dom-module>
+
+		<dom-module id ="component-carrito">
+			<template>
+				<style>
+					:host{
+						display: block;
+						padding:10px;
+						margin:10px;
+					}
+				</style>
+
+				<h3>Carrito</h3>	
+				<div class="centrar"></div>
+				<template is="dom-repeat" items="{{carrito}}">
+					<label>[[item]]</label> <br>
+				</template>	
+				</div>
+
+			</template>
+			<script>
+				class ComponentCarrito extends Polymer.Element{
+					static get is(){return 'component-carrito'}
+					static get properties(){
+						return {
+							fruta:{
+								type:String,
+								notify:true,
+								observer:"addToCarrito"
+							},
+							carrito:{
+								type:Array,
+								notify:true,
+								value:[]
+							}
+						};
+					}
+
+					addToCarrito(){
+						this.unshift('carrito',this.fruta);
+					}
+				}
+				window.customElements.define(ComponentCarrito.is,ComponentCarrito);
+			</script>
+		</dom-module>
+	</body>
+</html>
