@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ejercicio Brayan</title>
+
+	<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+	<script src="webcomponentsjs/webcomponents-loader.js"></script>
+	<link rel="import" href="iron-ajax/iron-ajax.html">
+	<link rel="import" href="polymer/polymer-element.html">
+</head>
+<body>
+	<component-torta></component-torta>
+	<dom-module id="component-torta">
+		<template>
+			<style>
+				:host{
+					display: block;
+					background: cyan;
+				}
+				.container{
+					display: grid;
+					grid-template-columns:[c1] 1fr [c2] 1fr [c3] 1fr[c4];
+					grid-template-rows: [r1]1fr [r2]1fr [r3];
+					grid-gap: 5px;
+					height: 90vh;
+				}
+
+				.item:nth-of-type(1){
+					grid-column: c1/c2;
+					grid-row: r1/r2;
+					border:3px solid black;
+					text-align: center;
+				}
+
+				.item:nth-of-type(2){
+					grid-column: c2/c3;
+					grid-row: r1/r2;
+					border:3px solid black;
+					text-align: center;
+				}
+
+				.item:nth-of-type(3){
+					grid-column: c3/c4;
+					grid-row: r1/r2;
+					border:3px solid black;
+					text-align: center;
+
+				}
+
+				.item:nth-of-type(4){
+					grid-column: c1/c4;
+					grid-row: r2/r3;
+					text-align: center;
+
+				}
+			</style>
+			
+			<div class="container">
+				<div class="item">
+					<h4>Pedro: Tengo [[torta]] torta(s) de chilaquiles!</h4>
+					<h4>[[messageTorta]]</h4>
+					<button on-click="recibirTorta">Recibir torta de chilaquiles</button>
+					<button on-click="entregarTorta">Regresar torta de chilaquiles</button>
+				</div>
+
+				<div class="item">
+					<component-hijo cantidad="{{cantidad}}" message="{{message}}"></component-hijo>
+				</div>
+
+				<div class="item">
+					<component-hijo2 cantidad="{{cantidad}}" message="{{message}}"></component-hijo2>
+				</div>
+
+				<div class="item">
+					<h1>Quedan [[cantidad]] torta(s) de chilaquiles!</h1>
+					<template is="dom-if" if="[[isMessage]]">
+						<h1>[[message]]</h1>
+					</template>
+					<input type="text" value="{{cantidad::input}}">
+				</div>
+			</div>
+		</template>
+		<script>
+			document.addEventListener('WebComponentsReady',function(){
+				Polymer({
+					is: 'component-torta',
+					properties:{
+						cantidad:{
+							type:Number,
+							value:0
+						},
+						torta:{
+							type:Number,
+							value:0
+						},
+						message:{
+							type:String,
+							observer:"updateMessage"
+						},
+						isMessage:{
+							type:Boolean,
+							value:false
+						},
+						messageTorta:{
+							type:String
+						}
+					},
+					updateMessage:function(){
+						console.log(this.message)
+						if(this.message===""){
+							this.isMessage=false;
+						}
+						else{
+							this.isMessage=true;
+						}
+					},
+					recibirTorta:function(){
+						this.messageTorta= "";
+						if(this.cantidad > 0){
+							this.torta = this.torta + 1;
+							this.isMessage = false;
+							this.cantidad = this.cantidad-1;
+						}
+						else{
+							this.message = "Ya no tienes tortas que agarrar >:c";
+							this.isMessage = true;
+						}
+					},
+					entregarTorta:function(){
+						this.messageTorta= "";
+						console.log('regresaste una torta')
+						if(this.torta >= 1){
+							this.isMessage= false;	
+							this.cantidad = this.cantidad+1;
+							this.torta = this.torta -1;
+						}
+						else{
+							this.messageTorta = "Ya no tienes tortas que regresar >:c"
+						}
+					}
+				});
+			})
+		</script>
+	</dom-module>
+
+	<dom-module id="component-hijo">
+		<template>
+			<style>
+				:host{
+					display:block;
+				}
+			</style>
+
+			<div class="item">
+				<h4>Pepe: Tengo [[torta]] torta(s) de chilaquiles!</h4>
+				<h4>[[messageTorta]]</h4>
+				<button on-click="recibirTorta">Recibir torta de chilaquiles</button>
+				<button on-click="entregarTorta">Regresar torta de chilaquiles</button>
+			</div>
+		</template>
+		<script>
+			Polymer({
+				is:'component-hijo',
+				properties:{
+					cantidad:{
+						type:Number,
+						notify:true
+					},
+					torta:{
+						type:Number,
+						value:0
+					},
+					messageTorta:{
+						type:String
+					},
+					message:{
+						type:String,
+						value:"",
+						notify:true
+					}
+				},
+				recibirTorta:function(){
+					this.messageTorta= "";
+					if(this.cantidad > 0){
+						this.torta = this.torta + 1;
+						//this.isMessage = false;
+						this.cantidad = this.cantidad-1;
+					}
+					else{
+						this.message = "Ya no tienes tortas que agarrar >:c";
+						//this.isMessage = true;
+					}
+				},
+				entregarTorta:function(){
+					this.messageTorta= "";
+					if(this.torta >= 1){
+						this.message = "";	
+						this.cantidad = this.cantidad+1;
+						this.torta = this.torta -1;
+					}
+					else{
+						this.messageTorta = "Ya no tienes tortas que regresar >:c"
+					}
+				}
+
+			});
+		</script>
+	</dom-module>
+
+	<dom-module id="component-hijo2">
+		<template>
+			<style>
+				:host{
+					display:block;
+				}
+			</style>
+
+			<div class="item">
+				<h4>Toño: Tengo [[torta]] torta(s) de chilaquiles!</h4>
+				<h4>[[messageTorta]]</h4>
+				<button on-click="recibirTorta">Recibir torta de chilaquiles</button>
+				<button on-click="entregarTorta">Regresar torta de chilaquiles</button>
+			</div>
+		</template>
+		<script>
+			Polymer({
+				is:'component-hijo2',
+				properties:{
+					cantidad:{
+						type:Number,
+						notify:true
+					},
+					torta:{
+						type:Number,
+						value:0
+					},
+					messageTorta:{
+						type:String
+					},
+					message:{
+						type:String,
+						notify:true
+					}
+				},
+				recibirTorta:function(){
+					this.messageTorta= "";
+					if(this.cantidad > 0){
+						this.torta = this.torta + 1;
+						this.cantidad = this.cantidad-1;
+					}
+					else{
+						this.message = "Ya no tienes tortas que agarrar >:c";
+						//this.isMessage = true;
+					}
+				},
+				entregarTorta:function(){
+					this.messageTorta= "";
+					console.log('regresaste una torta')
+					if(this.torta >= 1){	
+						this.message = "";
+						this.cantidad = this.cantidad+1;
+						this.torta = this.torta -1;
+					}
+					else{
+						console.log('regresaste una torta else')
+						this.messageTorta = "Ya no tienes tortas que regresar >:c"
+					}
+				}
+
+			});
+		</script>
+	</dom-module>
+</body>
+</html>

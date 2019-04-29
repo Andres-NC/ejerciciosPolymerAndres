@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ejercicio Luis</title>
+
+  	<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+  	<script src="webcomponentsjs/webcomponents-loader.js"></script>
+  	<link rel="import" href="iron-ajax/iron-ajax.html">
+  	<link rel="import" href="polymer/polymer-element.html">
+
+</head>
+<body>
+	<component-arreglos></component-arreglos>
+	<dom-module id="component-arreglos">
+	<template>
+		<style>
+			:host{
+				display: block;
+				background: cyan;
+				padding: 5px;
+			}
+		</style>
+		<h4>Array: [[arrayNumeros]]</h4>
+		<component-par-impar array-numeros="{{arrayNumeros}}"></component-par-impar>
+	</template>
+	<script>
+		class ComponentArreglos extends Polymer.Element{
+			static get is(){return 'component-arreglos'}
+			static get properties(){
+				return {
+					arrayNumeros:{
+						type:Array,
+						value:[10,2,5,2,6,9,3]
+					}
+				}
+			}
+		}
+		window.customElements.define(ComponentArreglos.is,ComponentArreglos)
+	</script>
+	<dom.module>
+
+	<dom-module id="component-par-impar">
+		<template>
+			<style>
+				:host{
+					display: block;
+				}
+				.par-impar{
+					height: 20px;
+					width: 25px;
+					background: white;
+					margin:5px;
+					text-align: center;
+				}
+			</style>
+			<button on-click="findPar">Filtar</button>
+			<h4>Pares</h4>
+			
+			<template is="dom-repeat" items="[[pares]]">
+				<div class="par-impar">
+					<label>[[item]]</label><br>
+				</div>
+			</template>
+			<h4>Mayor: [[mayorPar]]</h4>
+			
+			<h4>Impares</h4>
+			<template is="dom-repeat" items="[[impares]]">
+				<div class="par-impar">
+					<label>[[item]]</label><br>
+				</div>
+			</template>
+			<h4>Mayor: [[mayorImpar]]</h4>
+		</template>
+		<script>
+			class ComponentParImpar extends Polymer.Element{
+				static get is(){return 'component-par-impar'}
+				static get properties(){
+					return {
+						arrayNumeros:{
+							type:Array
+						},
+						pares:{
+							type:Array,
+							value:[]
+						},
+						impares:{
+							type:Array,
+							value:[]
+						},
+						mayorPar:{
+							type:Number,
+							value:0
+						},
+						mayorImpar:{
+							type:Number,
+							value:0
+						}
+					}
+				}
+
+				findPar(){
+					this.arrayNumeros.forEach((item,index,array)=>{
+						if(index%2==0){
+							if(item>this.mayorPar)
+								this.mayorPar = item;
+							this.push('pares',item)
+						}
+						else{
+							if(item>this.mayorImpar)
+								this.mayorImpar = item;
+							this.push('impares',item)
+						}
+					})
+				}
+			}
+			window.customElements.define(ComponentParImpar.is,ComponentParImpar)
+		</script>
+	<dom.module>
+</body>
+</html>

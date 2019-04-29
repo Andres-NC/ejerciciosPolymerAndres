@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ejercicio Eduardo</title>
+
+	<base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+	<script src="webcomponentsjs/webcomponents-loader.js"></script>
+	<link rel="import" href="iron-ajax/iron-ajax.html">
+	<link rel="import" href="polymer/polymer-element.html">
+
+</head>
+<body>
+	<component-teclas></component-teclas>
+	<dom-module id="component-teclas" >
+		<template >
+			<style>
+				:host{
+					display: block;
+					background: cyan;
+					height:90vh;
+				}
+				.nombre{
+					text-align: center;
+				}
+				.colorGreen{
+					text-align: center;
+					color:green;
+				}
+				.colorRed{
+					text-align: center;
+					color:red;
+				}
+				.teclas{
+					text-align: center;
+				}
+			</style>
+			<div class="container">
+				<div class="nombre">
+					<template is="dom-if" if="[[!isTecla]]">
+						<label>Nombre: </label>
+						<input type="text" value="{{nombre::input}}">
+						<button on-click="comprobarNombre">Comenzar</button><br>
+						<label ><b>[[message]]</b></label>
+						<h4>[[nombre]]</h4>
+					</template>
+				</div>
+				<div class="teclas">
+					<template is="dom-if" if="[[isTecla]]">
+						<h1>Tecla</h1>
+						<h2>[[teclaPresionada]]</h2>
+						<h1>Codigo</h1>
+						<h2>[[codigoTecla]]</h2>
+						<button on-click="addNombre">Agregar otro nombre</button>
+						<div class$="{{clase}}">
+							<h1>[[cadenaTeclas]]</h1>
+							<component-hijo cadena-teclas="{{cadenaTeclas}}" nombre="[[nombre]]" tecla-presionada="{{teclaPresionada}}" clase="{{clase}}"></component-hijo>
+						</div>
+					</template>
+				</div>
+			</div>
+		</template>
+		<script>
+			Polymer({
+				is:'component-teclas',
+				properties:{
+					nombre:{
+						type:String,
+						value:""
+					},
+					isTecla:{
+						type:Boolean,
+						value:false
+					},
+					message:{
+						type:String,
+						value:""
+					},
+					codigoTecla:{
+						type:String
+					},
+					teclaPresionada:{
+						type:String
+					},
+					clase:{
+						type:String,
+						value:"colorRed"
+					},
+					cadenaTeclas:{
+						type:String,
+						value:""
+					}
+				},
+				saveTecla:function(e){
+					console.log("Se Presiono una tecla")
+					console.log(e.target.value)
+				},
+				comprobarNombre(){
+					console.log(this.nombre)
+					if(this.nombre===""){
+						console.log("if")
+						this.message="Es necesario ingresar un nombre para continuar"
+						
+					}
+					else{
+						this.message=""
+						this.isTecla =true;
+						document.addEventListener("keydown",(e)=>{
+							this.codigoTecla = e.keyCode;
+							this.teclaPresionada = e.key;
+						});
+					}
+				},
+				addNombre:function(){
+					this.cadenaTeclas="";
+					this.isTecla=false;
+					this.teclaPresionada="";
+					document.removeEventListener("keydown",(e)=>{});
+				}	
+			})
+		</script>
+
+	</dom-module>
+
+	<dom-module id="component-hijo">
+		<template >
+			<style>
+				:host{
+					display: block;
+					background: cyan;
+					height:90vh;
+				}
+				.nombre{
+					text-align: center
+				}
+			</style>
+			<div class="container">
+				<div class="nombre">
+					<h3 style="color:black">[[cadenaTeclas]]</h3>
+					<h1>[[nombre]]</h1>
+				</div>
+			</div>
+		</template>
+		<script>
+			Polymer({
+				is:'component-hijo',
+				properties:{
+					nombre:{
+						type:String,
+						value:""
+					},
+					teclaPresionada:{
+						type:String,
+						observer:"changeTecla"
+					},
+					clase:{
+						type:String,
+						value:"colorRed",
+						notify:true
+					},
+					teclas:{
+						type:Array,
+						value:[]
+					},
+					cadenaTeclas:{
+						type:String,
+						value:"",
+						notify:true
+					}
+				},
+				changeTecla:function(){
+					this.addArray();
+					if(this.nombre.includes(this.teclaPresionada)){
+						this.clase="colorGreen"
+					}
+					else{
+						this.clase="colorRed"
+					}
+				},
+				addArray:function(){
+					if(this.cadenaTeclas==="")
+						this.teclas=[];
+					if(this.teclas.length==5){
+						this.shift('teclas',this.teclaPresionada);
+						this.push('teclas',this.teclaPresionada)
+						this.cadenaTeclas = this.teclas.join(" --> ")
+					}
+					else{
+						this.push('teclas',this.teclaPresionada)
+						this.cadenaTeclas = this.teclas.join(" --> ")
+					}
+				}
+			})
+		</script>
+	</dom-module>
+</body>
+</html>

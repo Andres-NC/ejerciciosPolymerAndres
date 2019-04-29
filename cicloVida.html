@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+
+      <base href="https://cdn.rawgit.com/download/polymer-cdn/2.6.0/lib/">
+  <script src="webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="iron-ajax/iron-ajax.html">
+  <link rel="import" href="polymer/polymer-element.html">
+    
+    <title>Uso del componente ciclo-vida y botones para poder producir cambios en el estado</title>
+  </head>
+
+  <body>
+    <h1>
+        Uso del componente ciclo-vida
+    </h1>
+    <p>Se colocan dos elementos en el body y se generan dos elementos en la memoria de Javascript.</p>
+    <p>Pulsa además los botones para poder producir cambios en el estado de un elemento y ver los otros mensajes del ciclo de vida.</p>
+    
+    <ciclo-vida></ciclo-vida>
+    <ciclo-vida></ciclo-vida>
+
+    <button id="anadirAlDOM">Añadir un elemento al DOM</button>
+    <button id="eliminarDelDOM">Eliminar un elemento del DOM</button>
+    <button id="cambiarAtributo">Cambiar un atributo de elemento</button>
+    
+    <dom-module id="ciclo-vida">
+      <template>
+        <style>
+          :host {
+            display: block
+          }
+        </style>
+
+        <div>Este es un elemento "ciclo-vida"</div>
+
+      </template>
+
+      <script>
+        class CicloVida extends Polymer.Element {
+
+          static get is() {
+            return 'ciclo-vida';
+          }
+
+          static get properties() {
+            return {
+              test: String
+            };
+          }
+
+          constructor() {
+            super();
+            console.log('Ejecutándose el constructor')
+          }
+
+          connectedCallback() {
+            super.connectedCallback();
+            console.log('Ejecutándose connectedCallback');
+          }
+
+          disconnectedCallback() {
+            super.disconnectedCallback();
+            console.log('Ejecutándose disconnectedCallback');
+          }
+
+          attributeChangedCallback(nombre, valorAnterior, valorNuevo) {
+            super.attributeChangedCallback();
+            console.log('Ejecutándose attributeChangedCallback', nombre, valorAnterior, valorNuevo);
+          }
+
+          ready() {
+            super.ready();
+            console.log('Ejecutándose ready');
+          }
+        }
+
+        window.customElements.define(CicloVida.is, CicloVida);
+      </script>
+    </dom-module>
+
+    <script>
+      var el1 = document.createElement('ciclo-vida');
+      el1.setAttribute('id', 'el1');
+      var el2 = new CicloVida();
+
+      document.getElementById('anadirAlDOM').addEventListener('click', function() {
+        document.body.appendChild(el1);
+      });
+
+      document.getElementById('eliminarDelDOM').addEventListener('click', function() {
+        document.body.removeChild(document.getElementById('el1'));
+      });
+
+      document.getElementById('cambiarAtributo').addEventListener('click', function() {
+        el1.setAttribute('test', 'valortest' + Date.now());
+      });
+    </script>
+  </body>
+</html>
